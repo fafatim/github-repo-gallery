@@ -3,12 +3,16 @@ const username = "fafatim"
 const repoList = document.querySelector(".repo-list");
 const reposSection = document.querySelector(".repos")
 const repoDataInfo = document.querySelector(".repo-data")
+const button = document.querySelector('button');
+const filterInput = document.querySelector(".filter-repos");
+
 const gitUserInfo = async function(){
     const userInfo = await fetch(`https://api.github.com/users/${username}`)
     const data = await userInfo.json();
     console.log(data);
 
     displayUserInfo(data)
+
 }
 
 gitUserInfo()
@@ -34,6 +38,7 @@ const getRepos = async function(){
     displayInfoAboutRepo(repoData);
 }
 const displayInfoAboutRepo =  function(repos){
+    filterInput.classList.remove("hide")
     for(const repo of repos){
         const repoItem = document.createElement("li")
          repoItem.classList.add("repo");
@@ -60,6 +65,7 @@ const gitRepoInfo = async function(repoName){
    specificRepoInfo(repoInfo, languages)
 }
 const specificRepoInfo = function(repoInfo, languages) {
+    button.classList.remove("hide");
     repoDataInfo.innerHTML = "";
     repoDataInfo.classList.remove("hide");
     reposSection.classList.add("hide");
@@ -72,4 +78,25 @@ const specificRepoInfo = function(repoInfo, languages) {
     <a class="visit" href="${repoInfo.html_url}" target="_blank" rel="noreferrer noopener">View Repo on GitHub!</a>`
    repoDataInfo.append(div);
 
+
 };
+button.addEventListener("click", function(){
+    reposSection.classList.remove("hide");
+    repoDataInfo.classList.add("hide");
+    button.classList.add("hide")
+
+})
+filterInput.addEventListener("input",function(e){
+    let searchText = document.querySelector(".filter-repos").value;
+    const repos = document.querySelectorAll(".repo")
+    const searchLowerText = searchText.toLowerCase();
+    for(const repo of repos){
+        let repoLowerText = repo.innerText.toLowerCase();
+        if(repoLowerText.includes(searchLowerText)){
+          repos.classList.remove("hide")
+        } else{
+            repos.classList.add("hide");
+        }
+    }
+
+});
